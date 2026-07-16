@@ -1,7 +1,9 @@
+**/*.bak
 **/*.rs.bk
 *.iml
 *.pdb
 .DS_Store
+.envrc
 .idea/
 .vscode/
 codecov
