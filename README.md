@@ -38,8 +38,8 @@ For a **binary** crate instead of a library, rename `src/lib.rs` to
 * **CI** ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) — build,
   test, MSRV check with minimal dependency versions, code coverage, and
   automated releases via [release-plz](https://release-plz.dev).
-* **[`justfile`](justfile)** — common developer tasks (`test`, `clippy`,
-  `fmt`, `coverage`, `msrv`, `semver`, …).
+* **[`justfile`](./justfile)** — common developer tasks (`test`, `clippy`,
+  `fmt`, `coverage`, `msrv`, `semver`, `cpd`, …).
 * **Lints** — shared `clippy` and `rustc` lint configuration in
   [`Cargo.toml`](Cargo.toml) and [`clippy.toml`](clippy.toml).
 * **Formatting** — [`.editorconfig`](.editorconfig),
@@ -47,6 +47,9 @@ For a **binary** crate instead of a library, rename `src/lib.rs` to
   [`.pre-commit-config.yaml`](.pre-commit-config.yaml).
 * **Dependabot** — grouped dependency and GitHub Actions updates with
   auto-merge for patch releases.
+* **Copy/paste detection** — [jscpd](https://github.com/kucherenko/jscpd),
+  configured in [`.jscpd.json`](.jscpd.json). Run `just cpd` locally; on pull
+  requests, CI posts a summary comment highlighting newly added clones.
 * **Dual licensing** — MIT and Apache-2.0.
 
 ## Development
