@@ -69,9 +69,6 @@ _coverage *report_args:  (cargo-install 'cargo-llvm-cov')
     cargo llvm-cov --no-report --workspace --all-features --all-targets
     cargo llvm-cov report --include-build-script {{report_args}}
 
-# jscpd's binstall metadata maps both of its binaries (jscpd and cpd) to the same archive file,
-# so install just the `jscpd` binary, and locate it in the archive by its name
-
 # Find copy/pasted code with jscpd, configured in .jscpd.json. See `just cpd --help` for all options
 cpd *args:  (cargo-install 'jscpd' 'jscpd --bin jscpd' '--bin-dir={bin}{binary-ext}')
     jscpd {{args}}

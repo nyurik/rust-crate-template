@@ -99,6 +99,7 @@ jobs:
   # Release unpublished packages or create a PR with changes
   release-plz:
     needs: [ ci-passed ]
+    # IMPORTANT: The name below must be your GitHub org or username
     if: |
       always()
       && needs.ci-passed.result == 'success'

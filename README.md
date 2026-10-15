@@ -28,10 +28,41 @@ CI shared across these crates so a new library starts with everything wired up.
      * `Always suggest updating pull request branches` - set
      * `Allow auto-merge` - set
      * `Automatically delete head branches` - set
+* Set up releases, see [Setting up releases](#setting-up-releases) below
 * Update this file
 
 For a **binary** crate instead of a library, rename `src/lib.rs` to
 `src/main.rs` (or add one alongside), and remove it from `.gitignore`
+
+### Setting up releases
+
+Releases are automated by [release-plz](https://release-plz.dev) in the `release-plz` job of
+[`ci.yml`](.github/workflows/ci.yml). On every push to `main` that passes CI it publishes the crate if
+`Cargo.toml` has a newer version than crates.io, and otherwise opens or updates a release PR with the next version
+and changelog. Merging that PR publishes the release. One-time setup:
+
+* In `ci.yml`, change the `github.repository_owner == 'nyurik'` guard if the repository lives under another owner.
+  The guard keeps forks from attempting to release.
+* **crates.io:** the job authenticates with
+  [trusted publishing](https://crates.io/docs/trusted-publishing) (`id-token: write`), so no crates.io token is needed.
+  Add the repository and the `ci.yml` workflow as a trusted publisher in the crate's settings on crates.io.
+  As of writing, a trusted publisher can only be added to a crate that already exists, so publish the first version
+  manually with `cargo publish`.
+* **`RELEASE_PLZ_TOKEN`:** a GitHub token is also needed, because pull requests, tags, and merges made with the default
+  `GITHUB_TOKEN` do not trigger other workflows. Without it CI does not run on the release PR (blocking the merge if CI
+  is a required check), and a merged Dependabot PR does not start a release run.
+  * Create a [fine-grained personal access token](https://github.com/settings/personal-access-tokens/new):
+    * *Resource owner*: the user or organization that owns the repository. Organizations can require owner approval for
+      fine-grained tokens, or disable them.
+    * *Repository access*: `Only select repositories`, choosing just this repository.
+    * *Repository permissions*: `Contents` and `Pull requests` set to `Read and write`. `Metadata` (read-only) is added
+      automatically, and nothing else is needed.
+    * Pick an expiration, and put the renewal date in a calendar. An expired token silently stops release PRs.
+  * Save it under the name `RELEASE_PLZ_TOKEN` in **both** *Settings → Secrets and variables → Actions* and
+    *Settings → Secrets and variables → Dependabot*. Dependabot-triggered runs, such as the auto-merge workflow in
+    [`dependabot.yml`](.github/workflows/dependabot.yml), cannot read the Actions secrets.
+  * A [GitHub App](https://release-plz.dev/docs/github/token) token (e.g. via `actions/create-github-app-token`) works
+    with the same permissions, does not expire, and is not tied to a person, at the cost of a more involved setup.
 
 ### What's included
 
